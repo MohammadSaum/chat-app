@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+.mainScreen{
+    background: #161717;
+}
+
+.sidebar{
+    background-color: #282A2C;
+}
