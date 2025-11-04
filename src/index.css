@@ -1,9 +1,44 @@
 @import "tailwindcss";
 
+.hide-scrollbar {
+  -ms-overflow-style: none;  
+  scrollbar-width: none;  
+}
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
 .mainScreen{
     background: #161717;
 }
 
 .sidebar{
-    background-color: #282A2C;
+    background-color: #1B1C1D;
+}
+
+.sideBarIcons{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    height: 35px;
+    padding:4px;
+    fill:rgb(128, 137, 143);
+    cursor: pointer;
+    border-radius:50%;
+    transition: 200ms ease-in-out;
+}
+
+.sideBarIcons:hover{
+    background-color: rgb(43, 42, 42);
+}
+
+.searchBar{
+    background-color: #FFFFFF1A;
+    
+}
+
+/* sort icons */
+
+.sortIcons{
+    border :#FFFFFF1A 1px solid
 }

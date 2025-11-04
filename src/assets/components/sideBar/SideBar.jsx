@@ -8,7 +8,7 @@ import AdminProfile from './AdminProfile'
 
 const Sidebar = () => {
   return (
-    <div className='sidebar min-h-screen w-17 bg-black border-r border-gray-500 p-3 flex flex-col'>
+    <div className='sidebar min-h-screen w-16 bg-black border-r border-gray-500 p-3 flex flex-col'>
         <div className='flex flex-col gap-4 border-b border-gray-500 pb-3 pt-2'>
             <Chat/>
             <Status/>
