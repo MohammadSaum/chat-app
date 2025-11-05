@@ -10,7 +10,7 @@ const ChatWindow = () => {
         <SearchComponent/>
         <SortComponent/>
 
-            <div className='grow mt-2 overflow-y-auto bg-amber-600 hide-scrollbar'>
+            <div className='grow mt-3 overflow-y-auto hide-scrollbar font-normal text-sm'>
             <MessagingContact/>
             </div>
 

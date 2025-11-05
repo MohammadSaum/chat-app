@@ -1,6 +1,4 @@
 import 'remixicon/fonts/remixicon.css'
-import Setting from './Setting'
-import AdminProfile from './AdminProfile'
 import { useState } from 'react'
 
 const Sidebar = () => {

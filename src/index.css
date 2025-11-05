@@ -61,3 +61,28 @@
     color: #FFFFFF99;
     border :#FFFFFF1A 1px solid;
 }
+
+
+/* messaging profile */
+
+.duration{
+    color: #FFFFFF99;
+    padding-right: 16px;
+    padding-top: 5px;
+}
+
+.sent{
+    color: #FFFFFF99;
+    overflow: hidden;
+    padding-right: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.messagingContact{
+    
+}
+
+.messagingContact:hover{
+    background-color: #FFFFFF1A;
+}

@@ -1,10 +1,32 @@
 import React from 'react'
+import AdminProfile from '../sideBar/AdminProfile'
 
 const MessagingContact = () => {
   return (
-    <div className=''>
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam iste nisi, sit, sequi, est obcaecati culpa error laudantium voluptatem reiciendis nulla delectus autem! Ut numquam voluptas facere delectus magnam commodi deserunt nemo mollitia. Quae possimus corporis rerum dignissimos deserunt! Rem pariatur qui harum atque illo debitis a deleniti hic in repudiandae provident quidem quis corporis fugiat, quasi, dolorem quibusdam? Obcaecati sapiente in nisi odio quo dolorum porro mollitia inventore cum. Vero cum nobis accusantium ipsum dolores sed voluptas, saepe architecto. Ipsa sint laborum magni rem tempore saepe nisi, quasi modi quae illum ut dolores? Sint numquam eum minima debitis mollitia!
-      culpa error laudantium voluptatem reiciendis nulla delectus autem! Ut numquam voluptas facere delectus magnam commodi deserunt nemo mollitia. Quae possimus corporis rerum dignissimos deserunt! Rem pariatur qui harum atque illo debitis a deleniti hic in repudiandae provident quidem quis corporis fugiat, quasi, dolorem quibusdam? Obcaecati sapiente in nisi odio quo dolorum porro mollitia inventore cum. Vero cum nobis accusantium ipsum dolores sed voluptas, saepe architecto. Ipsa sint laborum magni rem tempore saepe nisi, quasi modi quae illum ut dolores? Sint numquam eum minima debitis mollitia!
+    <div className='messagingContact rounded-xl flex h-16 pl-0 p-3 items-center hover:bg-gray-700 cursor-pointer mb-2 w-full shrink-0 duration-200'>
+        <div className='w-15 h-13 flex rounded-full items-center mr-3 justify-center border border-gray-500'>
+            <AdminProfile/>
+        </div>
+
+        <div className='flex flex-col w-full min-w-0 justify-center'>
+
+            <div className='flex h-7 w-full items-center justify-between'>
+                <div className='truncate font-medium'>
+                    Saum
+                </div>
+                
+                <div className='duration shrink-0 text-xs'>
+                    Yesterday
+                </div>
+
+            </div>
+
+            {/* bottom */}
+            <div className='text-sm sent truncate'>
+                Lorem ipsum dolor sit amet conse Lorem ipsum dolor sit amet consectetur.
+            </div>
+        </div>
+        
     </div>
   )
 }
