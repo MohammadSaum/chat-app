@@ -39,6 +39,12 @@
 
 /* sort icons */
 
-.sortIcons{
-    border :#FFFFFF1A 1px solid
+.activeBtn{
+    background:#103529; 
+    color:#D9FDD3;
+    border :#FFFFFF1A 1px solid;
+}
+.inActiveBtn{
+    color: #FFFFFF99;
+    border :#FFFFFF1A 1px solid;
 }

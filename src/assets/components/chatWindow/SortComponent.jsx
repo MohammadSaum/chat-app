@@ -1,14 +1,35 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 const SortComponent = () => {
-  return (
-    <div className='flex gap-2 text-sm '>
-            <div className='sortIcons px-3 py-1 rounded-4xl'>All</div>
-            <div className='sortIcons px-3 py-1 rounded-4xl'>Unread</div>
-            <div className='sortIcons px-3 py-1 rounded-4xl'>Favourites</div>
-            <div className='sortIcons px-3 py-1 rounded-4xl'>Groups</div>
-    </div>
-  )
+
+    const [selected, setSelected] = useState('All')
+
+    const btns = [
+            {id: 'All', label: 'All'},
+            {id: 'Unread', label: 'Unread'},
+            {id: 'Favourites', label: 'Favourites'},
+            {id: 'Groups', label:'Groups'}]
+
+    return (
+        <div className='flex gap-2 cursor-pointer text-sm '>
+            {btns.map((btn)=>
+                <button 
+                    key={btn.id}
+                    onClick={() =>{
+                        setSelected(btn.id)}}
+                        
+                    className={`sortIcons px-3 py-1 rounded-4xl 
+                            ${btn.id===selected 
+                            ? 'activeBtn'
+                            : 'inActiveBtn'
+                            }`}
+                    >{btn.label}</button>                        
+                )}
+                
+
+                
+        </div>
+    )
 }
 
 export default SortComponent
