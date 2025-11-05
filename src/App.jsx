@@ -3,7 +3,7 @@ import ChatWindow from './assets/components/chatWindow/ChatWindow'
 
 const App = () => {
   return (
-    <div className='mainScreen h-screen w-full flex'>
+    <div className='mainScreen overflow-y-auto h-screen w-full flex'>
       <Sidebar />
       <ChatWindow/>
     </div>

@@ -11,7 +11,7 @@ const SortComponent = () => {
             {id: 'Groups', label:'Groups'}]
 
     return (
-        <div className='flex gap-2 cursor-pointer text-sm '>
+        <div className='flex gap-2 cursor-pointer text-sm'>
             {btns.map((btn)=>
                 <button 
                     key={btn.id}
@@ -25,8 +25,6 @@ const SortComponent = () => {
                             }`}
                     >{btn.label}</button>                        
                 )}
-                
-
                 
         </div>
     )
