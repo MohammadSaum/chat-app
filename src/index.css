@@ -86,3 +86,10 @@
 .messagingContact:hover{
     background-color: #FFFFFF1A;
 }
+
+
+/* default svg */
+.defaultImage{
+    height: 200px;
+    width: 200px;
+}
