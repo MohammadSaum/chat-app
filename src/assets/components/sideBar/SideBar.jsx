@@ -1,5 +1,12 @@
 import 'remixicon/fonts/remixicon.css'
 import { useState } from 'react'
+import ChatPage from '../chatWindow/ChatPage/ChatWindow' 
+import StatusPage from '../chatWindow/StatusPage/StatusPage'
+import ChannelPage from '../chatWindow/ChannelPage/ChannelPage'
+import CommunityPage from '../chatWindow/CommunityPage/CommunityPage'
+import SettingPage from '../chatWindow/SettingPage/SettingPage'
+import AdminPage from '../chatWindow/AdminPage/AdminPage'
+
 
 const Sidebar = () => {
 
@@ -54,7 +61,7 @@ const Sidebar = () => {
                 <button
                     key={icon.id}
                     onClick={()=>{
-                        setBtnSelected(icon.id)}}                    
+                        setBtnSelected(icon.id)}}       
                     className={`
                         ${icon.id === btnSelected ?
                             'sideActive' : 'sideNotActive' 
@@ -84,6 +91,16 @@ const Sidebar = () => {
                 )
             })}
         </div>
+
+        <div className="p-4">
+        {btnSelected === 'Chat' && <ChatPage/>}
+        {btnSelected === 'Status' && <StatusPage />}
+        {btnSelected === 'Channel' && <ChannelPage/>}
+        {btnSelected === 'Community' && <CommunityPage />}
+
+        {btnSelected === 'Setting' && <SettingPage/>}
+        {btnSelected === 'AdminProfile' && <AdminPage/>}
+      </div>
     </div>
     )
 }
