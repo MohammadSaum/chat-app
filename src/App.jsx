@@ -6,6 +6,7 @@ import ChannelPage from './assets/components/chatWindow/ChannelPage/ChannelPage'
 import CommunityPage from './assets/components/chatWindow/CommunityPage/CommunityPage'
 import SettingPage from './assets/components/chatWindow/SettingPage/SettingPage'
 import AdminPage from './assets/components/chatWindow/AdminPage/AdminPage'
+import Default from './assets/components/ChatScreen/Default'
 
 
 const App = () => {
@@ -16,7 +17,13 @@ const App = () => {
     <div className='mainScreen shrink-0 overflow-y-auto h-screen w-full flex hide-scrollbar'>
       <Sidebar active={active} onSelect={setActive} />
       <main className="flex-1  bg-[#161717] overflow-auto">
-        {active === 'Chat' && <ChatPage />}
+        {active === 'Chat' && (
+          <div className="flex w-full h-full">
+            <ChatPage />
+            <Default />
+          </div>
+        )}
+       
         {active === 'Status' && <StatusPage />}
         {active === 'Channel' && <ChannelPage />}
         {active === 'Community' && <CommunityPage />}
