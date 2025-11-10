@@ -2,7 +2,6 @@ import Header from './Header'
 import SearchComponent from './SearchComponent'
 import SortComponent from './SortComponent'
 import MessagingContact from './MessagingContact'
-import Default from '../../ChatScreen/Default'
 
 const ChatWindow = () => {
   return (
