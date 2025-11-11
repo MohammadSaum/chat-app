@@ -72,7 +72,7 @@ const items = [
 
     const SettingPage = ({ onLogout = () => {} }) => {
     return (
-        <div className="text-white pt-5 px-5 pb-0 h-screen max-w-md shrink-0 overflow-auto flex flex-col bg-transparent">
+        <div className="text-white pt-5 px-5 pb-0 h-screen w-md shrink-0 overflow-auto flex flex-col bg-transparent">
         <div className="font-semibold text-xl h-13 w-full shrink-0">Settings</div>
 
         {/* Search */}
