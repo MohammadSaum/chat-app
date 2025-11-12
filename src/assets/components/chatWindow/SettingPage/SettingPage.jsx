@@ -70,7 +70,7 @@ const items = [
     },
     ];
 
-    const SettingPage = ({ onLogout = () => {} }) => {
+const SettingPage = ({ onLogout = () => {} }) => {
     return (
         <div className="text-white pt-5 px-5 pb-0 h-screen w-md shrink-0 overflow-auto flex flex-col bg-transparent">
         <div className="font-semibold text-xl h-13 w-full shrink-0">Settings</div>
@@ -123,7 +123,7 @@ const items = [
                 </div>
 
                 <div className="flex-1">
-                    <div className="font-medium text-sm leading-5">{it.title}</div>
+                    <div className=" text-md leading-5">{it.title}</div>
                     <div className="text-[13px] text-gray-400 mt-0.5">{it.subtitle}</div>
                 </div>
                 </button>

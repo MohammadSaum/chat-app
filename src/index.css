@@ -89,3 +89,23 @@
     height: 200px;
     width: 200px;
 }
+
+
+/* Custom Scrollbar Styling */
+.minScrollBar::-webkit-scrollbar {
+  width: 6px;                     /* Thin scrollbar */
+}
+
+.minScrollBar::-webkit-scrollbar-track {
+  background: transparent;        /* Invisible track */
+}
+
+.minScrollBar::-webkit-scrollbar-thumb {
+  background-color: rgba(80, 80, 80, 0.6);  /* Gray scrollbar */
+  border-radius: 9999px;          /* Fully rounded ends */
+  transition: background-color 0.2s ease;
+}
+
+.minScrollBar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(120, 120, 120, 0.8);  /* Slightly lighter on hover */
+}
