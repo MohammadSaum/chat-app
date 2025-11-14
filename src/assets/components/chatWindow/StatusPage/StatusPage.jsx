@@ -4,7 +4,7 @@ const StatusPage = () => {
   return (
     <div className=' w-md h-screen pt-5 px-5 pb-0 shrink-0 overflow-auto flex flex-col '>
         <div className='flex justify-between font-semibold text-xl h-13 w-full shrink-0 text-[#FAFAFA]'>
-        Status
+        <span>Status</span>
         
         <div className='flex gap-4 '>
         
@@ -18,12 +18,11 @@ const StatusPage = () => {
 
         </div>
 
-        <div className='h-full -mx-2 minScrollBar overflow-y-auto '>
+        <div className='h-full -mx-2 minScrollBar overflow-y-auto relative pb-20'>
 
             <div className='h-18 w-full flex gap-3 py-2 cursor-pointer hover:bg-[#FFFFFF1D] rounded-xl px-2 duration-200 transition-colors'>
 
-                <div className=' relative px-3 py-2 rounded-full flex items-center justify-center border border-white/20 backdrop-blur-sm>
-                '>
+                <div className=' relative px-3 py-2 rounded-full flex items-center justify-center border border-white/20 backdrop-blur-sm'>
                     <svg  className='rounded-full'
                     xmlns="http://www.w3.org/2000/svg" width='31' height='36' fill='rgb(128, 137, 143)' viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0z"></path><path d="M4 22C4 17.5817 7.58172 14 12 14C16.4183 14 20 17.5817 20 22H4ZM12 13C8.685 13 6 10.315 6 7C6 3.685 8.685 1 12 1C15.315 1 18 3.685 18 7C18 10.315 15.315 13 12 13Z"></path></svg>
 
@@ -35,8 +34,16 @@ const StatusPage = () => {
                 <div className=' w-full flex flex-col justify-center'>
                     <span className='text-[#FAFAFA]'>My status</span>
                     <span className='text-[#FFFFFF99] text-sm'>Click to add status update</span>
-
                 </div>
+            </div>
+
+            <div className='text-[#FFFFFF99] gap-1 text-xs font-medium flex justify-center items-center px-5 py-5 absolute bottom-0 w-full'>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path fill="none" d="M0 0h24v24H0z"></path><path d="M19 10H20C20.5523 10 21 10.4477 21 11V21C21 21.5523 20.5523 22 20 22H4C3.44772 22 3 21.5523 3 21V11C3 10.4477 3.44772 10 4 10H5V9C5 5.13401 8.13401 2 12 2C15.866 2 19 5.13401 19 9V10ZM5 12V20H19V12H5ZM11 14H13V18H11V14ZM17 10V9C17 6.23858 14.7614 4 12 4C9.23858 4 7 6.23858 7 9V10H17Z"></path></svg>
+
+                <span>Your status updates are</span>
+                <span className='text-[#21C063]'>
+                    end-to-end encrypted 
+                </span>
             </div>
 
         </div>
