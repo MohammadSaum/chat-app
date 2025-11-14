@@ -61,8 +61,8 @@ const Sidebar = ({ active = 'Chat', onSelect = () => {} }) => {
   }
 
   return (
-    <aside className='sidebar min-h-screen w-16 bg-black border-r border-gray-500 p-3 flex flex-col'>
-      <div className='flex flex-col gap-3 border-b border-gray-500 pb-3 pt-2'>
+    <aside className='sidebar min-h-screen w-16 bg-black border-r-2 border-[#202020] p-3 flex flex-col'>
+      <div className='flex flex-col gap-3 border-b border-gray-700 pb-3 pt-2'>
         {topIcons.map(renderIconBtn)}
       </div>
 
