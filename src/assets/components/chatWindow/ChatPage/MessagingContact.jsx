@@ -8,7 +8,7 @@ const MessagingContactList = () => {
   useEffect(() => {
     const data = async () => {
       try {
-        const res = await axios.get('https://randomuser.me/api/?results=20')
+        const res = await axios.get('https://randomuser.me/api/?results=15')
         setUsers(res.data.results)
       } catch (error) {
         console.error('error occurred:', error)
