@@ -11,6 +11,7 @@ import AdminProfileDefault from './assets/components/ChatScreen/AdminProfileDefa
 import SettingDefault from './assets/components/ChatScreen/SettingDefault'
 import CommunityDefault from './assets/components/ChatScreen/CommunityDefault'
 import StatusDefault from './assets/components/ChatScreen/StatusDefault.jsx'
+import ChannelDefault from './assets/components/ChatScreen/ChannelDefault.jsx'
 
 
 const App = () => {
@@ -28,7 +29,12 @@ const App = () => {
           </div>
         )}
        
-        {active === 'Channel' && <ChannelPage />}
+        {active === 'Channel' && (
+            <div className='flex h-full w-full'>
+                <ChannelPage />
+                <ChannelDefault/>
+                </div>
+                )}
         {active === 'Status' && (
             <div className='flex h-full w-full'>
             <StatusPage />
