@@ -5,12 +5,16 @@ import MessagingContact from './MessagingContact'
 
 const ChatWindow = () => {
   return (
-    <div className=' flex flex-col shrink-0 overflow-auto border-r-2 border-[#202020] h-screen w-md text-white font-semibold text-2xl p-5 pb-0'>
+    <div className=' flex flex-col shrink-0 overflow-hidden border-r-2 border-[#202020] h-screen w-md text-white font-semibold text-2xl p-5 pb-0'>
         <Header/>
         <SearchComponent/>
-        <SortComponent/>
 
-            <div className='grow mt-3 overflow-y-auto hide-scrollbar font-normal text-sm'>
+        <div className=""> 
+        {/* adjust top value to suit Header + Search heights */}
+        <SortComponent/>
+        </div>
+
+            <div className='flex-1 mt-3 overflow-y-auto minScrollBar font-normal text-sm'>
             <MessagingContact/>
             </div>
 
