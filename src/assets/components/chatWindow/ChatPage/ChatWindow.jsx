@@ -10,7 +10,6 @@ const ChatWindow = () => {
         <SearchComponent/>
 
         <div className=""> 
-        {/* adjust top value to suit Header + Search heights */}
         <SortComponent/>
         </div>
 

@@ -62,7 +62,7 @@ const ChannelPage = () => {
                     <span className='text-[#FFFFFF99]'>Find channels to follow below</span>
                 </div>
                 
-                <div className='w-full mt-4'>
+                <div className='w-full mt-4 min-h-[360px]'>
                     {channels.map( (item,idx) =>{
                         return <ChannelCard key = {idx} channel={item}/>
                     })}
