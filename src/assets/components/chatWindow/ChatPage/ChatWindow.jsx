@@ -13,7 +13,7 @@ const ChatWindow = () => {
         <SortComponent/>
         </div>
 
-            <div className='flex-1 mt-3 overflow-y-auto minScrollBar font-normal text-sm'>
+            <div className='flex-1 mt-3 -ml-2 overflow-y-auto minScrollBar font-normal text-sm'>
             <MessagingContact/>
             </div>
 

@@ -20,7 +20,7 @@ const MessagingContactList = () => {
 const MessagingContactCard = ({ user }) => {
 
   return (
-    <div className='messagingContact rounded-xl flex h-16 pl-0 p-3 items-center hover:bg-gray-700 cursor-pointer mb-2 w-full shrink-0 duration-200'>
+    <div className='messagingContact rounded-xl flex h-16 pl-1 p-3 items-center hover:bg-gray-700 cursor-pointer mb-2 w-full shrink-0 duration-200'>
       <div className='w-15 h-13 flex rounded-full items-center mr-3 justify-center'>
         <img
           src={user.picture.large}
@@ -47,7 +47,7 @@ const MessagingContactCard = ({ user }) => {
 
 
   return (
-    <div>
+    <div className='p-1'>
       {users.map((user, idx) => (
         <MessagingContactCard key={idx} user={user} />
       ))}
