@@ -1,4 +1,3 @@
-// ChatPanel.jsx
 import React, { useEffect, useRef, useState } from "react";
 
 const ChatPanel = ({ contact, messages, onSend }) => {
@@ -40,7 +39,7 @@ const ChatPanel = ({ contact, messages, onSend }) => {
             key={msg.id}
             className={`max-w-[70%] p-3 rounded-xl text-sm ${
               msg.fromMe
-                ? "ml-auto bg-green-700"
+                ? "ml-auto bg-[#21C063]"
                 : "bg-[#1f1f1f]"
             }`}
           >
@@ -64,7 +63,7 @@ const ChatPanel = ({ contact, messages, onSend }) => {
         />
         <button
           type="submit"
-          className="px-4 py-2 bg-green-700 rounded-full"
+          className="px-4 py-2 bg-[#21C063] cursor-pointer rounded-full hover:scale-95"
         >
           Send
         </button>

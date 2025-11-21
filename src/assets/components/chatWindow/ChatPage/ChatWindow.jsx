@@ -8,10 +8,8 @@ const ChatWindow = ({ selectedId, onSelectContact, onSelect }) => {
     const forwardSelect = (contact) => {
     const handler = onSelectContact || onSelect
     if (typeof handler === 'function') {
-      console.log('ChatWindow: forwarding select ->', contact?.id)
       handler(contact)
     } else {
-      console.warn('ChatWindow: no select handler provided', { onSelectContact, onSelect })
     }
   }
   return (
@@ -20,7 +18,7 @@ const ChatWindow = ({ selectedId, onSelectContact, onSelect }) => {
       <SearchComponent />
       <div><SortComponent /></div>
 
-      <div className='flex-1 mt-3 -ml-2 overflow-y-auto minScrollBar font-normal text-sm'>
+      <div className='flex-1 mt-3 -ml-2 overflow-y-auto hide-scrollbar font-normal text-sm'>
         <MessagingContactList
           selectedId={selectedId}
           onSelect={(contact) => forwardSelect(contact)}
