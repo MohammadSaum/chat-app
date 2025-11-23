@@ -200,13 +200,13 @@ const ChatPanel = ({
             onClick={() => setMenuOpen((s) => !s)}
             aria-haspopup="true"
             aria-expanded={menuOpen}
-            className="p-2 rounded-full hover:bg-[#232323] focus:outline-none"
+            className="p-2 rounded-full hover:bg-[#FFFFFF19] focus:outline-none"
             title="Options"
           >
-            <div className="flex flex-col items-center gap-1">
-              <span className="w-1 h-1 rounded-full bg-white/90 block" />
-              <span className="w-1 h-1 rounded-full bg-white/90 block" />
-              <span className="w-1 h-1 rounded-full bg-white/90 block" />
+            <div className="flex flex-col items-center gap-1 rounded-full w-5">
+              <span className="w-1 h-1 rounded-full bg-white/90 " />
+              <span className="w-1 h-1 rounded-full bg-white/90 " />
+              <span className="w-1 h-1 rounded-full bg-white/90 " />
             </div>
           </button>
 
