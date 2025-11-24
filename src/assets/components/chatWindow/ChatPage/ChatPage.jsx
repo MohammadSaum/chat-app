@@ -1,37 +1,149 @@
-import ChatWindow from './ChatWindow.jsx'
-import React, { useState } from 'react'
-import ChatPanel from './ChatPanel.jsx'   
-import Default from "../../ChatScreen/Default.jsx"
+// ChatPage.jsx
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import ChatWindow from "./ChatWindow.jsx";
+import ChatPanel from "./ChatPanel.jsx";
+import Default from "../../ChatScreen/Default.jsx";
 
+/* timestamp formatter used in multiple places */
+const formatTimestamp = (ts) => {
+  if (!ts) return "";
+  const d = new Date(ts);
+  const now = new Date();
 
-const ChatPage = () => {
-  const [selectedContactId, setSelectedContactId] = useState(null)
-  const [selectedContactObj, setSelectedContactObj] = useState(null)
-  const [messagesCache, setMessagesCache] = useState({})
+  const isToday =
+    d.getDate() === now.getDate() &&
+    d.getMonth() === now.getMonth() &&
+    d.getFullYear() === now.getFullYear();
 
-
-    const handleSelectContact = (contact) => {
-  const id = contact?.id ?? contact?.login?.uuid ?? null
-  setSelectedContactId(contact.id)
-  setSelectedContactObj(contact)
-
-}
-
-  const handleSend = (contactId, text) => {
-    setMessagesCache(prev => {
-      const prevMsgs = prev[contactId] || []
-      const newMsg = { id: Date.now(), fromMe: true, text }
-      return { ...prev, [contactId]: [...prevMsgs, newMsg] }
-    })
+  if (isToday) {
+    return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   }
 
-  const currentMessages = messagesCache[selectedContactId] || []
+  const yesterday = new Date();
+  yesterday.setDate(now.getDate() - 1);
+  const isYesterday =
+    d.getDate() === yesterday.getDate() &&
+    d.getMonth() === yesterday.getMonth() &&
+    d.getFullYear() === yesterday.getFullYear();
+
+  if (isYesterday) return "Yesterday";
+
+  return d.toLocaleDateString([], { day: "2-digit", month: "2-digit" });
+};
+
+const ChatPage = () => {
+  const [selectedContactId, setSelectedContactId] = useState(null);
+  const [selectedContactObj, setSelectedContactObj] = useState(null);
+
+  // messagesCache: { [contactId]: [msg, ...] }
+  const [messagesCache, setMessagesCache] = useState({});
+
+  // contacts are owned here so updates persist
+  const [contacts, setContacts] = useState([]);
+  const [loadingContacts, setLoadingContacts] = useState(true);
+
+  // Fetch contacts once here (so MessagingContactList doesn't re-fetch on every prop change)
+  useEffect(() => {
+    let cancelled = false;
+    const fetchContacts = async () => {
+      try {
+        setLoadingContacts(true);
+        const res = await axios.get("https://randomuser.me/api/?results=15");
+        if (cancelled) return;
+        const mapped = res.data.results.map((u) => ({
+          id: u.login?.uuid,
+          name: u.name,
+          picture: u.picture,
+          email: u.email,
+          lastMessage: "Tap to start a chat",
+          lastAt: null,
+          raw: u,
+        }));
+        setContacts(mapped);
+      } catch (err) {
+        console.error("failed to fetch contacts", err);
+      } finally {
+        if (!cancelled) setLoadingContacts(false);
+      }
+    };
+    fetchContacts();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  /* select a contact - keep selectedContactObj in sync with contacts state so previews reflect updates */
+  const handleSelectContact = (contact) => {
+    const id = contact?.id ?? contact?.login?.uuid ?? null;
+    if (!id) return;
+    setSelectedContactId(id);
+
+    // prefer the canonical contact object from `contacts` state (so lastMessage etc are present)
+    const canonical = contacts.find((c) => c.id === id);
+    setSelectedContactObj(canonical ?? contact);
+  };
+
+  /* handleSend(contactId, payload)
+     - payload can be a string (text) or a message object { id, text, fromMe, timestamp, ... }
+  */
+  const handleSend = (contactId, payload) => {
+    if (!contactId) {
+      console.warn("handleSend called without contactId");
+      return;
+    }
+
+    const message =
+      typeof payload === "string"
+        ? {
+            id: `local-${Date.now()}`,
+            text: payload,
+            fromMe: true,
+            timestamp: Date.now(),
+          }
+        : {
+            id: payload.id ?? `local-${Date.now()}`,
+            text: payload.text ?? "",
+            fromMe: payload.fromMe ?? true,
+            timestamp: payload.timestamp ?? Date.now(),
+            ...payload,
+          };
+
+    // 1) append to messagesCache (immutable update)
+    setMessagesCache((prev) => {
+      const prevForId = prev[contactId] ?? [];
+      return {
+        ...prev,
+        [contactId]: [...prevForId, message],
+      };
+    });
+
+    // 2) update contacts preview (lastMessage & lastAt)
+    setContacts((prev) => {
+      const updated = prev.map((c) =>
+        c.id === contactId ? { ...c, lastMessage: message.text, lastAt: message.timestamp } : c
+      );
+
+      // optionally move the contact to the top (uncomment if you want most-recently-active on top)
+      // const moved = updated.slice().sort((a, b) => (b.lastAt || 0) - (a.lastAt || 0));
+      // return moved;
+
+      return updated;
+    });
+
+    // 3) update the selectedContactObj if it's the same contact
+    setSelectedContactObj((prev) => (prev && prev.id === contactId ? { ...prev, lastMessage: message.text, lastAt: message.timestamp } : prev));
+  };
+
+  const currentMessages = messagesCache[selectedContactId] || [];
 
   return (
     <div className="flex w-full h-full">
       <ChatWindow
+        contacts={contacts}
         selectedId={selectedContactId}
-        onSelect={handleSelectContact}
+        onSelect={(contact) => handleSelectContact(contact)}
+        formatTimestamp={formatTimestamp}
       />
 
       <div className="flex-1">
@@ -39,14 +151,19 @@ const ChatPage = () => {
           <ChatPanel
             contact={selectedContactObj}
             messages={currentMessages}
-            onSend={(text) => handleSend(selectedContactId, text)}
+            // ChatPanel in your repo sends a message object; we accept object or string here
+            onSend={(payload) => handleSend(selectedContactId, payload)}
+            onCloseChat={() => {
+              setSelectedContactId(null);
+              setSelectedContactObj(null);
+            }}
           />
         ) : (
           <Default />
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ChatPage
+export default ChatPage;

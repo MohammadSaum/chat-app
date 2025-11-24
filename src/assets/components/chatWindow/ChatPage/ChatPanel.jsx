@@ -50,15 +50,27 @@ const ChatPanel = ({
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!text.trim()) return;
-    if (onSend) onSend(text.trim());
-    // also add to localMessages for instant feedback (assumes parent may also push it later)
+
+    // create a full message object so parent can use for previews
     const newMsg = {
       id: `local-${Date.now()}`,
       text: text.trim(),
       fromMe: true,
+      timestamp: Date.now(),
     };
+
+    // immediate local feedback
     setLocalMessages((m) => [...m, newMsg]);
     setText("");
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+
+    // call parent with the message object (parent can update contact preview / last message)
+    try {
+      // If parent expects only text, update parent code — recommended to accept message object.
+      if (onSend) onSend(newMsg);
+    } catch (err) {
+      console.error("onSend callback error", err);
+    }
   };
 
   const displayName = contact?.name
@@ -75,7 +87,7 @@ const ChatPanel = ({
           src={avatarSrc}
           alt={displayName}
           className={`w-${size} h-${size} rounded-full object-cover`}
-          style={{ width: `${size * 4}px`, height: `${size * 4}px` }} // ensure consistent size with tailwind-less numeric classes
+          style={{ width: `${size * 4}px`, height: `${size * 4}px` }}
         />
       );
     }
@@ -134,6 +146,7 @@ const ChatPanel = ({
     onSelectMessage(contact, entering);
   };
 
+  // **Updated close action** — resets local messages and tells parent to clear selection/show default view
   const handleCloseChat = () => {
     setMenuOpen(false);
     // close modals / selection
@@ -141,7 +154,14 @@ const ChatPanel = ({
     setShowClearConfirm(false);
     setSelectMode(false);
     setSelectedIds(new Set());
-    onCloseChat(contact);
+    setLocalMessages([]); // reset local messages to avoid stale view
+
+    // Inform parent to go back to default — pass null so parent can set selectedContactId=null
+    try {
+      onCloseChat(null);
+    } catch (err) {
+      console.error("onCloseChat callback error", err);
+    }
   };
 
   /* -----------------------
@@ -203,7 +223,7 @@ const ChatPanel = ({
             className="p-2 rounded-full hover:bg-[#FFFFFF19] focus:outline-none"
             title="Options"
           >
-            <div className="flex flex-col items-center gap-1 rounded-full w-5">
+            <div className="flex flex-col w-5 items-center gap-1 rounded-full ">
               <span className="w-1 h-1 rounded-full bg-white/90 " />
               <span className="w-1 h-1 rounded-full bg-white/90 " />
               <span className="w-1 h-1 rounded-full bg-white/90 " />
