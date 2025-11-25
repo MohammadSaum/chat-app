@@ -32,46 +32,29 @@ const formatTimestamp = (ts) => {
   return d.toLocaleDateString([], { day: "2-digit", month: "2-digit" });
 };
 
-const ChatPage = () => {
+const ChatPage = ({ contacts: propsContacts, loadingContacts: propsLoadingContacts, setContacts: propsSetContacts }) => {
   const [selectedContactId, setSelectedContactId] = useState(null);
   const [selectedContactObj, setSelectedContactObj] = useState(null);
 
   // messagesCache: { [contactId]: [msg, ...] }
   const [messagesCache, setMessagesCache] = useState({});
 
-  // contacts are owned here so updates persist
-  const [contacts, setContacts] = useState([]);
-  const [loadingContacts, setLoadingContacts] = useState(true);
+  // Use props contacts if provided, otherwise fallback to local state
+  const [contacts, setContacts] = useState(propsContacts || []);
+  const [loadingContacts, setLoadingContacts] = useState(propsLoadingContacts || true);
 
-  // Fetch contacts once here (so MessagingContactList doesn't re-fetch on every prop change)
+  // Update local state when props change
   useEffect(() => {
-    let cancelled = false;
-    const fetchContacts = async () => {
-      try {
-        setLoadingContacts(true);
-        const res = await axios.get("https://randomuser.me/api/?results=15");
-        if (cancelled) return;
-        const mapped = res.data.results.map((u) => ({
-          id: u.login?.uuid,
-          name: u.name,
-          picture: u.picture,
-          email: u.email,
-          lastMessage: "Tap to start a chat",
-          lastAt: null,
-          raw: u,
-        }));
-        setContacts(mapped);
-      } catch (err) {
-        console.error("failed to fetch contacts", err);
-      } finally {
-        if (!cancelled) setLoadingContacts(false);
-      }
-    };
-    fetchContacts();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+    if (propsContacts && propsContacts.length > 0) {
+      setContacts(propsContacts);
+    }
+  }, [propsContacts]);
+
+  useEffect(() => {
+    if (typeof propsLoadingContacts !== 'undefined') {
+      setLoadingContacts(propsLoadingContacts);
+    }
+  }, [propsLoadingContacts]);
 
   /* select a contact - keep selectedContactObj in sync with contacts state so previews reflect updates */
   const handleSelectContact = (contact) => {
@@ -123,6 +106,11 @@ const ChatPage = () => {
       const updated = prev.map((c) =>
         c.id === contactId ? { ...c, lastMessage: message.text, lastAt: message.timestamp } : c
       );
+
+      // Also update parent if setter was provided
+      if (propsSetContacts) {
+        propsSetContacts(updated);
+      }
 
       // optionally move the contact to the top (uncomment if you want most-recently-active on top)
       // const moved = updated.slice().sort((a, b) => (b.lastAt || 0) - (a.lastAt || 0));

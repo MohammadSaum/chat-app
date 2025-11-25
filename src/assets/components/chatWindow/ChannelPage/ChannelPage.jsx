@@ -1,19 +1,22 @@
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 
-const ChannelPage = () => {
-    const [channels, setChannels] = useState([])
-    useEffect(()=>{
-        const data = async () => {
-        try {
-        const res = await axios.get('https://randomuser.me/api/?results=5')
-        setChannels(res.data.results)
-        } catch (error) {
-        console.error('error occurred:', error)
+const ChannelPage = ({ channels: propsChannels, loadingChannels: propsLoadingChannels }) => {
+    const [channels, setChannels] = useState(propsChannels || [])
+    const [loadingChannels, setLoadingChannels] = useState(propsLoadingChannels || true)
+
+    // Update local state when props change
+    useEffect(() => {
+        if (propsChannels && propsChannels.length > 0) {
+            setChannels(propsChannels)
         }
+    }, [propsChannels])
+
+    useEffect(() => {
+        if (typeof propsLoadingChannels !== 'undefined') {
+            setLoadingChannels(propsLoadingChannels)
         }
-        data()
-    } , [])
+    }, [propsLoadingChannels])
 
     const ChannelCard = ({channel}) =>{
         return(
