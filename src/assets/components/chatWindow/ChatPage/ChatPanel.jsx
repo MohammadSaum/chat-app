@@ -381,7 +381,7 @@ const ChatPanel = ({
                 <div className="mt-4 flex justify-end gap-2">
                 <button
                     onClick={() => setShowContactModal(false)}
-                    className="px-3 py-1 rounded-md bg-[#2b2b2b]"
+                    className="px-3 py-1 rounded-md bg-[#2b2b2b] cursor-pointer hover:scale-95"
                 >
                     Close
                 </button>
