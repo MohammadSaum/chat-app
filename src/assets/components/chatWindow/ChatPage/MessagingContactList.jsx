@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useImperativeHandle, forwardRef } from "react";
 import axios from "axios";
 
 /* Timestamp formatter (local fallback if parent doesn't provide one) */
@@ -29,17 +29,33 @@ const defaultFormatTimestamp = (ts) => {
 };
 
 /* Contact card */
-const MessagingContactCard = ({ user, onClick, isActive, formatTimestamp }) => {
+const MessagingContactCard = ({ user, onClick, isActive, formatTimestamp, isSelectMode, isSelected, onSelectChange }) => {
   return (
     <div
       role="button"
-      onClick={() => onClick?.(user)}
+      onClick={() => {
+        if (isSelectMode) {
+          onSelectChange?.(user.id)
+        } else {
+          onClick?.(user)
+        }
+      }}
       tabIndex={0}
       onKeyDown={(e) => { if (e.key === "Enter") onClick?.(user) }}
-      className={`messagingContact rounded-xl flex h-16 pl-1 p-3 items-center cursor-pointer mb-2 w-full shrink-0 duration-200
+      className={`messagingContact rounded-xl flex h-16 pl-1 p-3 items-center cursor-pointer mb-2 w-full shrink-0 duration-200 relative
                 ${isActive ? "bg-[#FFFFFF1D]" : "hover:bg-[#FFFFFF1D]"}`}
     >
-      <div className="w-15 h-13 flex rounded-full items-center mr-3 justify-center">
+      {isSelectMode && (
+        <div className='absolute left-3 top-1/2 transform -translate-y-1/2'>
+          <div className={`w-5 h-5 rounded-full border-2 border-[#FFFFFF1A] flex items-center justify-center ${isSelected ? 'bg-gray-800' : ''}`}>
+            {isSelected && (
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="white"><path fill="none" d="M0 0h24v24H0z"></path><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"></path></svg>
+            )}
+          </div>
+        </div>
+      )}
+
+      <div className={`w-15 h-13 flex rounded-full items-center ${isSelectMode ? 'ml-8' : 'mr-3'} justify-center`}>
         <img
           src={user.picture?.large ?? "/placeholder-avatar.png"}
           alt={`${user.name?.first ?? ""} ${user.name?.last ?? ""}`}
@@ -69,12 +85,32 @@ const MessagingContactCard = ({ user, onClick, isActive, formatTimestamp }) => {
 };
 
 /* Main list component */
-const MessagingContactList = ({ contacts: externalContacts, selectedId, onSelect, formatTimestamp }) => {
+const MessagingContactListComponent = ({ contacts: externalContacts, selectedId, onSelect, formatTimestamp, onSelectModeChange }, ref) => {
   const [contacts, setContacts] = useState(externalContacts ?? []);
   const [loading, setLoading] = useState(!Array.isArray(externalContacts) || externalContacts.length === 0);
   const [error, setError] = useState(null);
+  const [isSelectMode, setIsSelectMode] = useState(false);
+  const [selectedContacts, setSelectedContacts] = useState(new Set());
+  const [pinnedContacts, setPinnedContacts] = useState(new Set());
+  const [showSelectDropdown, setShowSelectDropdown] = useState(false);
+  const selectDropdownRef = React.useRef(null);
 
   const fmt = formatTimestamp ?? defaultFormatTimestamp;
+
+  // control helpers
+  const enableSelectMode = () => setIsSelectMode(true)
+  const disableSelectMode = () => handleExitSelectMode()
+  const pinSelected = () => handlePin()
+  const deleteSelected = () => handleDelete()
+
+  // Expose functions to parent
+  useImperativeHandle(ref, () => ({
+    enableSelectMode,
+    disableSelectMode,
+    pinSelected,
+    deleteSelected,
+    getSelectedCount: () => selectedContacts.size
+  }), [selectedContacts.size]);
 
   // If parent supplies contacts prop, keep local `contacts` synced to it.
   useEffect(() => {
@@ -117,29 +153,104 @@ const MessagingContactList = ({ contacts: externalContacts, selectedId, onSelect
     return () => { cancelled = true };
   }, [externalContacts]);
 
+  const handleSelectToggle = (contactId) => {
+    setSelectedContacts(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(contactId)) {
+        newSet.delete(contactId);
+      } else {
+        newSet.add(contactId);
+      }
+      return newSet;
+    });
+  };
+
+  const handleDelete = () => {
+    setContacts(prev => prev.filter(c => !selectedContacts.has(c.id)));
+    setSelectedContacts(new Set());
+  };
+
+  const handlePin = () => {
+    setPinnedContacts(prev => {
+      const newSet = new Set(prev);
+      selectedContacts.forEach(id => {
+        if (newSet.has(id)) {
+          newSet.delete(id);
+        } else {
+          newSet.add(id);
+        }
+      });
+      return newSet;
+    });
+    setSelectedContacts(new Set());
+  };
+
+  const handleExitSelectMode = () => {
+    setIsSelectMode(false);
+    setSelectedContacts(new Set());
+    setShowSelectDropdown(false);
+  };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const onDocClick = (e) => {
+      if (!showSelectDropdown) return;
+      if (selectDropdownRef.current?.contains(e.target)) return;
+      setShowSelectDropdown(false);
+    };
+
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setShowSelectDropdown(false);
+      }
+    };
+
+    document.addEventListener('click', onDocClick);
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('click', onDocClick);
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, [showSelectDropdown]);
+
+  // notify parent when select mode changes or selected count changes
+  useEffect(() => {
+    if (typeof onSelectModeChange === 'function') {
+      onSelectModeChange({ isSelectMode, selectedCount: selectedContacts.size });
+    }
+  }, [isSelectMode, selectedContacts.size, onSelectModeChange]);
+
+  // Sort contacts: pinned first, then rest
+  const sortedContacts = [...contacts].sort((a, b) => {
+    const aIsPinned = pinnedContacts.has(a.id);
+    const bIsPinned = pinnedContacts.has(b.id);
+    return bIsPinned - aIsPinned;
+  });
+
   if (loading) return <div className="p-2 text-[#FFFFFF1A]">Loading…</div>;
   if (error) return <div className="p-2 text-red-400">Failed to load</div>;
 
-  /* When parent wants to update a contact's lastMessage/lastAt, the parent should update the contacts prop.
-     If you need local update helper for testing/demo, uncomment and use updateContactPreview below. */
-
-  // const updateContactPreview = (id, { lastMessage, lastAt }) => {
-  //   setContacts(prev => prev.map(c => c.id === id ? { ...c, lastMessage, lastAt } : c));
-  // };
-
   return (
-    <div className="p-1">
-      {contacts.map((user) => (
-        <MessagingContactCard
-          key={user.id}
-          user={user}
-          isActive={selectedId === user.id}
-          onClick={onSelect}
-          formatTimestamp={fmt}
-        />
-      ))}
+    <div className="flex flex-col h-full">
+      <div className="flex-1 p-1 overflow-y-auto minScrollBar">
+        {sortedContacts.map((user) => (
+          <MessagingContactCard
+            key={user.id}
+            user={user}
+            isActive={selectedId === user.id && !isSelectMode}
+            onClick={onSelect}
+            formatTimestamp={fmt}
+            isSelectMode={isSelectMode}
+            isSelected={selectedContacts.has(user.id)}
+            onSelectChange={handleSelectToggle}
+          />
+        ))}
+      </div>
+
     </div>
   );
 };
+
+const MessagingContactList = forwardRef(MessagingContactListComponent);
 
 export default MessagingContactList;
