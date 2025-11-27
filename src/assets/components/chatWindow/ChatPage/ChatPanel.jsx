@@ -300,8 +300,8 @@ const ChatPanel = ({
         {/* Messages */}
         <div className="flex-1 hide-scrollbar overflow-y-auto p-4 space-y-3">
             {localMessages.length === 0 && (
-            <div className="text-center text-gray-400 mt-10">
-                No messages yet — say hi 👋
+            <div className="text-center text-[#FFFFFF1D] mt-10">
+                No messages yet — say hi
             </div>
             )}
 

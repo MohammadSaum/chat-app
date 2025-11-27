@@ -89,8 +89,8 @@ const ChatWindow = ({ contacts, selectedId, onSelectContact, onSelect, formatTim
       <div>
         {selectModeActive ? (
           <div className='mb-3'>
-            <div className='px-3 py-2 bg-[#202020] rounded flex items-center justify-between'>
-              <div className='text-[#21C063] font-medium text-lg'>{selectedCount} selected</div>
+            <div className='px-3 py-2 bg-[#202020] rounded-xl flex items-center justify-between'>
+              <div className='text-[#FFFFFF99] font-medium text-base'>{selectedCount} selected</div>
               <div className='flex items-center gap-2'>
                 <button
                   ref={selectBarToggleRef}
@@ -103,9 +103,9 @@ const ChatWindow = ({ contacts, selectedId, onSelectContact, onSelect, formatTim
               </div>
             </div>
             {showSelectBarDropdown && (
-              <div style={{ position: 'fixed', top: selectBarDropdownPos.top + 'px', left: selectBarDropdownPos.left + 'px' }} className='w-23 bg-[#1F1F1F] rounded-lg shadow-lg border border-[#FFFFFF1D] z-50 text-lg'>
-                <button onClick={onPinFromBar} className='w-full text-left px-4 py-3 text-[#FFFFFF99] hover:bg-[#FFFFFF1D] duration-150 flex items-center gap-3'>Pin</button>
-                <button onClick={onDeleteFromBar} className='w-full text-left px-4 py-3 text-[#FF6B6B] hover:bg-[#FFFFFF1D] duration-150 flex items-center gap-3'>Delete</button>
+              <div style={{ position: 'fixed', top: selectBarDropdownPos.top + 'px', left: selectBarDropdownPos.left + 'px' }} className='w-35 bg-[#1F1F1F] rounded-lg shadow-lg border border-[#FFFFFF1D] z-50 text-base font-normal'>
+                <button onClick={onPinFromBar} className='w-full text-left px-4 py-1 text-[#FFFFFF99] hover:bg-[#FFFFFF1D] duration-150 flex items-center gap-3 border-b border-[#FFFFFF1D]'>Pin</button>
+                <button onClick={onDeleteFromBar} className='w-full text-left px-4 py-1 text-[#FF6B6B] hover:bg-[#FFFFFF1D] duration-150 flex items-center gap-3'>Delete</button>
               </div>
             )}
           </div>
