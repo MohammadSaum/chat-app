@@ -2,7 +2,7 @@ import Header from './Header'
 import SearchComponent from './SearchComponent'
 import SortComponent from './SortComponent'
 import MessagingContactList from './MessagingContactList'
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect, forwardRef, useImperativeHandle } from 'react'
 
 /*
   Props:
@@ -11,7 +11,7 @@ import { useRef, useState, useEffect } from 'react'
     - onSelect (or onSelectContact) : fn(contact)
     - formatTimestamp (optional) : fn(ts) -> string
 */
-const ChatWindow = ({ contacts, selectedId, onSelectContact, onSelect, formatTimestamp }) => {
+const ChatWindow = ({ contacts, selectedId, onSelectContact, onSelect, formatTimestamp, setContacts, appSetContacts }, ref) => {
   const contactListRef = useRef(null)
   const [selectModeActive, setSelectModeActive] = useState(false)
   const [selectedCount, setSelectedCount] = useState(0)
@@ -29,6 +29,12 @@ const ChatWindow = ({ contacts, selectedId, onSelectContact, onSelect, formatTim
       contactListRef.current.enableSelectMode()
     }
   }
+
+  // expose touch contact to parent
+  useImperativeHandle(ref, () => ({
+    touchContact: (contactId) => contactListRef.current?.touchContact(contactId),
+    getSelectedCount: () => contactListRef.current?.getSelectedCount?.() ?? 0
+  }), [])
 
   const handleOnSelectModeChange = ({ isSelectMode, selectedCount }) => {
     setSelectModeActive(Boolean(isSelectMode))
@@ -120,6 +126,8 @@ const ChatWindow = ({ contacts, selectedId, onSelectContact, onSelect, formatTim
           contacts={contacts}            // <-- pass parent-owned contacts (if any)
           selectedId={selectedId}
           onSelect={(contact) => forwardSelect(contact)}
+          setContacts={setContacts}
+          appSetContacts={appSetContacts}
           onSelectModeChange={handleOnSelectModeChange}
           formatTimestamp={formatTimestamp}
         />
@@ -128,4 +136,4 @@ const ChatWindow = ({ contacts, selectedId, onSelectContact, onSelect, formatTim
   )
 }
 
-export default ChatWindow
+export default forwardRef(ChatWindow)

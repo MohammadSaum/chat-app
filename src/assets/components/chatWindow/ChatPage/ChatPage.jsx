@@ -125,10 +125,14 @@ const ChatPage = ({ contacts: propsContacts, loadingContacts: propsLoadingContac
 
   const currentMessages = messagesCache[selectedContactId] || [];
 
+  // chatWindowRef not needed; sorting & lastAt updates enough to reorder contacts
+
   return (
     <div className="flex w-full h-full">
       <ChatWindow
         contacts={contacts}
+        setContacts={setContacts}
+        appSetContacts={propsSetContacts}
         selectedId={selectedContactId}
         onSelect={(contact) => handleSelectContact(contact)}
         formatTimestamp={formatTimestamp}

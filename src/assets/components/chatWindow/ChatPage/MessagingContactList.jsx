@@ -85,7 +85,7 @@ const MessagingContactCard = ({ user, onClick, isActive, formatTimestamp, isSele
 };
 
 /* Main list component */
-const MessagingContactListComponent = ({ contacts: externalContacts, selectedId, onSelect, formatTimestamp, onSelectModeChange }, ref) => {
+const MessagingContactListComponent = ({ contacts: externalContacts, selectedId, onSelect, formatTimestamp, onSelectModeChange, setContacts: parentSetContacts, appSetContacts }, ref) => {
   const [contacts, setContacts] = useState(externalContacts ?? []);
   const [loading, setLoading] = useState(!Array.isArray(externalContacts) || externalContacts.length === 0);
   const [error, setError] = useState(null);
@@ -102,6 +102,34 @@ const MessagingContactListComponent = ({ contacts: externalContacts, selectedId,
   const disableSelectMode = () => handleExitSelectMode()
   const pinSelected = () => handlePin()
   const deleteSelected = () => handleDelete()
+  const touchContact = (contactId) => {
+    setContacts(prev => {
+      const idx = prev.findIndex(c => c.id === contactId)
+      if (idx === -1) return prev
+
+      const contact = prev[idx]
+      const isPinned = contact.pinned === true
+
+      // remove contact from list
+      const newList = prev.slice(0, idx).concat(prev.slice(idx + 1))
+
+      let updated
+      if (isPinned) {
+        // move to front of pinned area
+        const pinned = newList.filter(c => c.pinned)
+        const rest = newList.filter(c => !c.pinned)
+        updated = [contact, ...pinned, ...rest]
+      } else {
+        // not pinned: insert after pinned area
+        const pinned = newList.filter(c => c.pinned)
+        const unpinned = newList.filter(c => !c.pinned)
+        updated = [...pinned, contact, ...unpinned]
+      }
+      if (parentSetContacts) parentSetContacts(updated)
+      if (appSetContacts) appSetContacts(updated)
+      return updated
+    })
+  }
 
   // Expose functions to parent
   useImperativeHandle(ref, () => ({
@@ -109,6 +137,7 @@ const MessagingContactListComponent = ({ contacts: externalContacts, selectedId,
     disableSelectMode,
     pinSelected,
     deleteSelected,
+    touchContact,
     getSelectedCount: () => selectedContacts.size
   }), [selectedContacts.size]);
 
@@ -120,6 +149,11 @@ const MessagingContactListComponent = ({ contacts: externalContacts, selectedId,
       setError(null);
     }
   }, [externalContacts]);
+
+  // keep local pinned set in sync with contacts' pinned property
+  useEffect(() => {
+    setPinnedContacts(new Set(contacts.filter(c => c.pinned).map(c => c.id)))
+  }, [contacts]);
 
   // If no external contacts provided, fetch from API once.
   useEffect(() => {
@@ -166,7 +200,12 @@ const MessagingContactListComponent = ({ contacts: externalContacts, selectedId,
   };
 
   const handleDelete = () => {
-    setContacts(prev => prev.filter(c => !selectedContacts.has(c.id)));
+    setContacts(prev => {
+      const filtered = prev.filter(c => !selectedContacts.has(c.id));
+      if (parentSetContacts) parentSetContacts(filtered)
+      if (appSetContacts) appSetContacts(filtered)
+      return filtered
+    });
     setSelectedContacts(new Set());
   };
 
@@ -182,6 +221,17 @@ const MessagingContactListComponent = ({ contacts: externalContacts, selectedId,
       });
       return newSet;
     });
+    // Also mark pinned in contact objects and update parent if setter available
+    setContacts(prev => {
+      const updated = prev.map(c => {
+        if (!selectedContacts.has(c.id)) return c
+        const newPinned = !(c.pinned === true)
+        return { ...c, pinned: newPinned, lastAt: newPinned ? Date.now() : c.lastAt }
+      })
+      if (parentSetContacts) parentSetContacts(updated)
+      if (appSetContacts) appSetContacts(updated)
+      return updated
+    })
     setSelectedContacts(new Set());
   };
 
@@ -220,11 +270,21 @@ const MessagingContactListComponent = ({ contacts: externalContacts, selectedId,
     }
   }, [isSelectMode, selectedContacts.size, onSelectModeChange]);
 
-  // Sort contacts: pinned first, then rest
+  // Sort contacts: pinned first, then rest; among each group order by lastAt descending
   const sortedContacts = [...contacts].sort((a, b) => {
-    const aIsPinned = pinnedContacts.has(a.id);
-    const bIsPinned = pinnedContacts.has(b.id);
-    return bIsPinned - aIsPinned;
+    const aPinned = a.pinned ? 1 : 0;
+    const bPinned = b.pinned ? 1 : 0;
+    if (aPinned !== bPinned) return bPinned - aPinned; // pinned first
+
+    // If both pinned, and one is selected, keep selected at highest priority
+    if (a.pinned && b.pinned) {
+      if (selectedId === a.id && selectedId !== b.id) return -1;
+      if (selectedId === b.id && selectedId !== a.id) return 1;
+    }
+
+    const aAt = a.lastAt || 0;
+    const bAt = b.lastAt || 0;
+    return bAt - aAt;
   });
 
   if (loading) return <div className="p-2 text-[#FFFFFF1A]">Loading…</div>;
