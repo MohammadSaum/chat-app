@@ -32,12 +32,14 @@ const formatTimestamp = (ts) => {
   return d.toLocaleDateString([], { day: "2-digit", month: "2-digit" });
 };
 
-const ChatPage = ({ contacts: propsContacts, loadingContacts: propsLoadingContacts, setContacts: propsSetContacts }) => {
+const ChatPage = ({ contacts: propsContacts, loadingContacts: propsLoadingContacts, setContacts: propsSetContacts, messagesCache: propsMessagesCache, setMessagesCache: propsSetMessagesCache }) => {
   const [selectedContactId, setSelectedContactId] = useState(null);
   const [selectedContactObj, setSelectedContactObj] = useState(null);
 
   // messagesCache: { [contactId]: [msg, ...] }
-  const [messagesCache, setMessagesCache] = useState({});
+  const [localMessagesCache, setLocalMessagesCache] = useState({});
+  const messagesCache = propsMessagesCache ?? localMessagesCache;
+  const setMessagesCache = propsSetMessagesCache ?? setLocalMessagesCache;
 
   // Use props contacts if provided, otherwise fallback to local state
   const [contacts, setContacts] = useState(propsContacts || []);

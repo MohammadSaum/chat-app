@@ -21,6 +21,14 @@ const App = () => {
     const [channels, setChannels] = useState([])
     const [loadingContacts, setLoadingContacts] = useState(true)
     const [loadingChannels, setLoadingChannels] = useState(true)
+    const [messagesCache, setMessagesCache] = useState(() => {
+        try {
+            const stored = localStorage.getItem('messagesCache')
+            return stored ? JSON.parse(stored) : {}
+        } catch (e) {
+            return {}
+        }
+    })
 
     // Fetch contacts once on component mount
     useEffect(() => {
@@ -73,11 +81,21 @@ const App = () => {
         }
     }, [])
 
+    // persist messages cache to localStorage so it survives page reloads
+    useEffect(() => {
+        try {
+            localStorage.setItem('messagesCache', JSON.stringify(messagesCache))
+        } catch (e) {
+            // ignore storage errors
+            console.error('Failed to persist messages', e)
+        }
+    }, [messagesCache])
+
   return (
     <div className='mainScreen shrink-0 overflow-y-auto h-screen w-full flex '>
       <Sidebar active={active} onSelect={setActive} />
       <main className="flex-1  bg-[#161717] overflow-auto hide-scrollbar">
-        {active === 'Chat' && <ChatPage contacts={contacts} loadingContacts={loadingContacts} setContacts={setContacts} />}
+        {active === 'Chat' && <ChatPage contacts={contacts} loadingContacts={loadingContacts} setContacts={setContacts} messagesCache={messagesCache} setMessagesCache={setMessagesCache} />}
        
         {active === 'Channel' && (
             <div className='flex h-full w-full'>
