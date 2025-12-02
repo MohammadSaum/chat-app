@@ -147,6 +147,7 @@ const ChatPage = ({ contacts: propsContacts, loadingContacts: propsLoadingContac
             messages={currentMessages}
             // ChatPanel in your repo sends a message object; we accept object or string here
             onSend={(payload) => handleSend(selectedContactId, payload)}
+            formatTimestamp={formatTimestamp}
             onCloseChat={() => {
               setSelectedContactId(null);
               setSelectedContactObj(null);

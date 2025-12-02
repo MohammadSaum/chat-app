@@ -9,6 +9,7 @@ const ChatPanel = ({
     onSelectMessage = () => {},
     onDeleteMessages = () => {},
     onCloseChat = () => {},
+    formatTimestamp = null,
     }) => {
     // Local copy of messages so component can mutate (clear/delete) even if parent didn't
     const [localMessages, setLocalMessages] = useState(messages || []);
@@ -328,7 +329,10 @@ const ChatPanel = ({
                     ) : null}
                     </div>
                 )}
-                <div>{msg.text}</div>
+                                <div className="flex w-full items-end justify-between gap-2">
+                                    <div className="pr-2">{msg.text}</div>
+                                    <div className="text-xs text-[#FFFFFF99] ml-2">{formatTimestamp ? formatTimestamp(msg.timestamp) : (msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '')}</div>
+                                </div>
                 </div>
             );
             })}
