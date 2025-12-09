@@ -78,5 +78,3 @@ Typing indicators + online status
 
 Dark mode toggle
 
-🤝 Contributing
-Pull requests are welcome. Feel free to improve UI, performance, or add new features.
